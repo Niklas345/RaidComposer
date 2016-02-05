@@ -242,6 +242,9 @@
             $('#helpStuff *').css("display", "none")
         }
     }
+    $(document).ready(function() {
+        toggleHelp();
+    })
 
 </script>
 
@@ -255,6 +258,8 @@
     <style>
         body {
             background-repeat : no-repeat;
+            background-size: contain;
+            background-position: center;
         }
         #raidTables caption {
             width: 40%;
@@ -265,18 +270,23 @@
         }
         .buttonbutton
         {
+            margin-top:7px;
+
+            margin-bottom:7px;
             width: 100%;
         }
         .transparentContainer
         {
             width: 100%;
             height: 200pt;
+            opacity: 0.8;
         }
+
     </style>
 </head>
-<body background="GW2_Logo.png">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
+<body background="kickLogo.png">
+    <nav class="navbar navbar-default" >
+        <div class="container-fluid" >
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">[kick] Raid Utilities</a>
             </div>
@@ -296,8 +306,8 @@
                 The format has to be a valid json following the sample format <br>
                 Press sample button to see a sample <br>
                 2)Press "Read Setup"<br>
-                3)Edit the names<br>
-                4)Press "print"</div>
+                3)Edit the names + press "Updates Names"<br>
+                4)Press "Print", select your preferred print mode</div>
         </div>
         <div class="col-md-4"></div>
     </div>
@@ -390,9 +400,9 @@
             </div>
             <div class="col-md-2">
                 <div class="dropup" style="width:100%" >
-                    <button type="button" class="btn btn-default buttonbutton"
+                    <button type="button" class="btn btn-primary buttonbutton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Print
+                        Print <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu buttonbutton">
                         <li><a href="#" onclick="createStringRep('#rSetupPrint',false)">Boss-Sorted</a></li>
@@ -403,9 +413,9 @@
             </div>
             <div class="col-md-2">
                 <div class="dropup" style="width:100%" >
-                    <button type="button" class="btn btn-default buttonbutton"
+                    <button type="button" class="btn btn-success buttonbutton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Samples
+                        Samples     <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu buttonbutton">
                         <li><a href="#" onclick="openSample('sampleTeam1Bosses.json')">1 Boss</a></li>
