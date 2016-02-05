@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    var Setup;
+    var SampleWindow;
+
+    //! @brief Constructs a complete Raid Setup from the given JSON string
+    //!        Some of the functions are closely tied to the DOM structure it
+    //!        generates via "toTable".
+    //! @param  inputJSON JSON Input String
+    function RaidSetup(inputJSON)
+    {
+        // Raid data. JSON object, array of bosses which contains information
+        this._rawData = inputJSON;
+
+        // Raid Setup data
+        this._data = null;
+
+
+        // Prefix used for unqiue IDs for the player name input fields. Is combined with
+        // the current position ID to form an unique selector of the current name input field.
+        this._inputFieldPrefix = "RaidPlanInpt";
+
+
+        //! @brief  creates a single table based on the given JSON object bossData
+        //! @param  bossData    The data for the boss. Structure:
+        //!                     id : id for table
+        //!                     name : bossname
+        //1                     teamSetup : array of object with members (pName, pRole, uID)
+        //!                     size : size of the party
+        //! @return HTML String rep of the whole table
+        this._oneTable = function(bossData)
+        {
+            var res = '';
+            res = res + "<div class='col-md-4'>";
+            res = res + "<table id='" + bossData.id + "' class='table table-condensed table-bordered table-striped'>";
+            res = res + "<caption>" + bossData.name + "</caption>";
+            res = res + "<tr><th>Role</th><th>Name</th></tr>\n";
+            for(var i = 0; i < bossData.teamSetup.classes.length; i++)
+            {
+                res = res + "<tr id='" + bossData.teamSetup.classes[i].uID + "'>\n";
+                res = res + "<td>" + bossData.teamSetup.classes[i].pRole + "</td>\n";
+                res = res + "<td>";
+                res = res + "<input id='" + this._inputFieldPrefix + bossData.teamSetup.classes[i].uID + "' ";
+                res = res + "value='" + bossData.teamSetup.classes[i].pName + "'>";
+                res = res + "</td>";
+                res = res + "</tr>\n"
+            }
+            res += "</table>";
+            res += "</div>";
+            return res;
+        };
+
+        //! @brief processes the given raw json data into a raid setup
+        this.create = function() {
+            try {
+                this._data = JSON.parse(this._rawData);
+            }
+            catch(e)
+            {
+                alert("Error while parsing data. Exception is logged to console.")
+                console.log(e);
+            }
+        };
+
+        //! @brief  creates a table representation of the raid setup.
+        //!         for each td element, the unqize party member IDs are being used
+        //!         for each boss subtable, the uniqze boss ID is being used
+        //! @return tables for each boss.
+        this.toTable = function() {
+            var tables = '';
+            for(var i = 0; i < this._data.RaidTeam.length; i++)
+            {
+                tables = tables + this._oneTable(this._data.RaidTeam[i]);
+            }
+            return tables;
+
+        };
+
+        //! @brief  Updates the player names of the given boss team composition
+        //!         A table with given unqiue input identifiers has to be able
+        //!         this table is being create bei toTable function
+        this.updateBossNames = function(bossData)
+        {
+            for(var i = 0; i < bossData.teamSetup.classes.length; i++)
+            {
+                bossData.teamSetup.classes[i].pName =
+                        $('#' + this._inputFieldPrefix + bossData.teamSetup.classes[i].uID).val();
+            }
+        };
+
+        //! @brief  Updates all player data with data from the given tables in tableContainerID container
+        this.updateSetup = function(tableContainerID)
+        {
+            for(var i = 0; i < this._data.RaidTeam.length; i++)
+            {
+                this.updateBossNames(this._data.RaidTeam[i]);
+            }
+            console.log(this._data);
+        };
+
+        //! @brief  returns a string rep of the given boss team
+        this.bossTeamToString = function(bossData)
+        {
+            var res = "";
+            for(var i = 0; i < bossData.teamSetup.classes.length; i++)
+            {
+                res += bossData.teamSetup.classes[i].pName;
+                res += " - ";
+                res += bossData.teamSetup.classes[i].pRole;
+                if(i < bossData.teamSetup.classes.length - 1 )
+                {
+
+                    res += " | ";
+                }
+            }
+            return res;
+        };
+
+        //! @brief  Returns a string rep of the raid composition
+        //! @return string rep with pattern:
+        //!         Bossname: player - role | player - role | ... | player - role \n
+        //!         Bossname: ...etc...
+        this.toString = function()
+        {
+
+            var res = '';
+            for(var i = 0; i < this._data.RaidTeam.length; i++)
+            {
+                res += this._data.RaidTeam[i].name + ': ';
+                res += this.bossTeamToString(this._data.RaidTeam[i]);
+                res += "\n\n\n";
+            }
+            return res;
+        };
+
+        //! @brief  Returns a players class in the given setup
+        //! @param  bossData    Setup data for one boss/group comp
+        //! @param  pName       Player name
+        this.getPlayerClass = function(bossData, pName)
+        {
+            var res;
+            for(var i = 0; i < bossData.teamSetup.classes.length; i++)
+            {
+                if(bossData.teamSetup.classes[i].pName == pName)
+                {
+                    res = bossData.teamSetup.classes[i].pRole;
+                }
+            }
+            return res;
+        };
+
+        //! @brief  Returns player name at index pIndex
+        this.getPlayerName = function(bossData, pIndex)
+        {
+            return bossData.teamSetup.classes[pIndex].pName;
+        };
+
+
+        //! @brief  Returns the raid team representation, sorted by players
+        //! @return String rep in this form:
+        //!         <pname> : <class> <class> <class> |
+        this.toStringPlayerSorted = function()
+        {
+            var i = 0;
+            var j = 0;
+            var res ='';
+            for(i = 0; i < this._data.RaidTeam[0].teamSetup.classes.length; i++)
+            {
+                var name = this.getPlayerName(this._data.RaidTeam[0], i);
+                res += name;
+                res += " : ";
+                for(j = 0; j < this._data.RaidTeam.length; j++)
+                {
+                    res += "<";
+                    res += this.getPlayerClass(this._data.RaidTeam[j], name);
+                    res += "> ";
+                }
+                res += "\n";
+            }
+            return res;
+        }
+
+        //! @brief  Returns stringified JSON of setup, indented with 4 whitespace
+        this.toJSONString = function()
+        {
+            return JSON.stringify(this._data, null, 4);
+        }
+    }
+
+    //!----------------------- Communication with Setup Object/DOM ----------------------
+
+    function createStringRep(targetTAreaID, doAltRep)
+    {
+        if(doAltRep)
+        {
+            $(targetTAreaID).html(Setup.toStringPlayerSorted());
+        }
+        else
+        {
+            $(targetTAreaID).html(Setup.toString());
+        }
+
+    }
+
+    function printJSON(targetTAreaID)
+    {
+        $(targetTAreaID).html(Setup.toJSONString());
+    }
+
+    function updateSetup(containerID)
+    {
+        Setup.updateSetup(containerID);
+    }
+    function readAndCreateSetup(id, targetTableContainer) {
+        Setup = new RaidSetup($(id).val());
+        Setup.create();
+        $(targetTableContainer).html( Setup.toTable());
+    }
+    function openSample() {
+        SampleWindow = window.open("sampleTeam.json", "", "width=800, height=600");
+        $(SampleWindow).keyup(function(e) {
+            if(e.keyCode == 27) {
+                SampleWindow.close();
+            }
+        });
+    }
+
+    function toggleHelp()
+    {
+        if ($('#helpStuff *').css("display") == "none")
+        {
+            $('#helpStuff *').css("display", "block");
+        }
+        else
+        {
+            $('#helpStuff *').css("display", "none")
+        }
+    }
+
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>
+        Raid Group Composer
+    </title>
+    <style>
+        body {
+            background-repeat : no-repeat;
+        }
+        #raidTables caption {
+            width: 40%;
+            padding-left : 30%;
+        }
+        #raidTables input {
+            width: 100%;
+        }
+        .buttonbutton
+        {
+            width: 100%;
+        }
+        .transparentContainer
+        {
+            width: 100%;
+            height: 200pt;
+        }
+    </style>
+</head>
+<body background="GW2_Logo.png">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">[kick] Raid Utilities</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="composer.html">Raid Composer</a></li>
+                <li><a href="DynamicFoodCalcV2.html">Food Calc</a></li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div id="helpStuff" class="col-md-4">
+            <div class="alert alert-success" role="alert">How to:<br>
+                1)Paste the Raid group composition into the left text area.<br>
+                The format has to be a valid json following the sample format <br>
+                Press sample button to see a sample <br>
+                2)Press "Read Setup"<br>
+                3)Edit the names<br>
+                4)Press "print"</div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+    <div id="inputContainer">
+        <div class="row" id="textBoxes">
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+                <textarea id ="rSetupTArea" class="transparentContainer">
+
+{
+  "RaidTeam": [
+  {
+    "name" : "Valeguardian",
+    "id" : "VG",
+    "teamSetup" :
+    {
+      "size" : 10,
+      "classes" : [
+        {"pName" : "none", "pRole" : "Guardian", "uID" : "VG0"},
+        {"pName" : "none", "pRole" : "Chrono", "uID" : "VG1"},
+        {"pName" : "none", "pRole" : "Condi", "uID" : "VG2"},
+        {"pName" : "none", "pRole" : "Condi", "uID" : "VG3"},
+        {"pName" : "none", "pRole" : "Condi", "uID" : "VG4"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "VG5"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "VG6"},
+        {"pName" : "none", "pRole" : "Chrono", "uID" : "VG7"},
+        {"pName" : "none", "pRole" : "PS", "uID" : "VG8"},
+        {"pName" : "none", "pRole" : "Druid", "uID" : "VG9"}
+      ]
+    }
+  },
+  {
+    "name" : "Gorseval",
+    "id" : "GV",
+    "teamSetup" :
+    {
+      "size" : 10,
+      "classes" : [
+        {"pName" : "none", "pRole" : "Chronotank", "uID" : "GV0"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "GV1"},
+        {"pName" : "none", "pRole" : "PSWarr", "uID" : "GV2"},
+        {"pName" : "none", "pRole" : "Bubbleele", "uID" : "GV3"},
+        {"pName" : "none", "pRole" : "Bubblenecro", "uID" : "GV4"},
+        {"pName" : "none", "pRole" : "DPS-Ele", "uID" : "GV5"},
+        {"pName" : "none", "pRole" : "DPS-Engi", "uID" : "GV6"},
+        {"pName" : "none", "pRole" : "DPS-Necro", "uID" : "GV7"},
+        {"pName" : "none", "pRole" : "Druid", "uID" : "GV8"},
+        {"pName" : "none", "pRole" : "Breakbar-Engi", "uID" : "GV9"}
+      ]
+    }
+  },
+  {
+    "name" : "Sabetha",
+    "id" : "SAB",
+    "teamSetup" :
+    {
+      "size" : 10,
+      "classes" : [
+        {"pName" : "none", "pRole" : "Guardian", "uID" : "SAB0"},
+        {"pName" : "none", "pRole" : "Chrono", "uID" : "SAB1"},
+        {"pName" : "none", "pRole" : "Druid", "uID" : "SAB2"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "SAB3"},
+        {"pName" : "none", "pRole" : "PSWarr", "uID" : "SAB4"},
+        {"pName" : "none", "pRole" : "PSWarr", "uID" : "SAB5"},
+        {"pName" : "none", "pRole" : "Ele", "uID" : "SAB6"},
+        {"pName" : "none", "pRole" : "Ele", "uID" : "SAB7"},
+        {"pName" : "none", "pRole" : "Engi", "uID" : "SAB8"},
+        {"pName" : "none", "pRole" : "Range-Necro", "uID" : "SAB9"}
+      ]
+    }
+  }]
+}
+
+                </textarea>
+            </div>
+            <div class="col-md-5">
+                <textarea id ="rSetupPrint" class="transparentContainer" ></textarea>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div id="buttons" class="row"   >
+            <div class="col-md-1    ">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="buttonbutton btn btn-primary" id="btnCreateSetup" onclick="readAndCreateSetup('#rSetupTArea', '#raidTables')">Read Setup</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="buttonbutton btn btn-primary" id="btnUpdateSetup" onclick="updateSetup('#raidTables')">Update Names</button>
+            </div>
+            <div class="col-md-2">
+                <div class="btn-group" style="width:100%" >
+                    <button type="button" class="btn btn-default buttonbutton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Print
+                    </button>
+                    <ul class="dropdown-menu buttonbutton">
+                        <li><a href="#" onclick="createStringRep('#rSetupPrint',false)">Boss-Sorted</a></li>
+                        <li><a href="#" onclick="createStringRep('#rSetupPrint', true)">Player-Sorted</a></li>
+                        <li><a href="#" onclick="printJSON('#rSetupPrint')">Readable JSON</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="buttonbutton btn btn-success"  onclick="openSample()">Open Sample</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" id="helpButton" class="buttonbutton btn btn-success" onclick="toggleHelp()">Toggle Help</button>
+            </div>
+
+            <div class="col-md-1">
+            </div>
+        </div>
+    </div>
+    <div id="raidTables" class="row"></div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+
+{
+  "RaidTeam": [
+  {
+    "name" : "Valeguardian",
+    "id" : "VG",
+    "teamSetup" :
+    {
+      "size" : 10,
+      "classes" : [
+        {"pName" : "none", "pRole" : "Guardian", "uID" : "VG0"},
+        {"pName" : "none", "pRole" : "Chrono", "uID" : "VG1"},
+        {"pName" : "none", "pRole" : "Condi", "uID" : "VG2"},
+        {"pName" : "none", "pRole" : "Condi", "uID" : "VG3"},
+        {"pName" : "none", "pRole" : "Condi", "uID" : "VG4"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "VG5"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "VG6"},
+        {"pName" : "none", "pRole" : "Chrono", "uID" : "VG7"},
+        {"pName" : "none", "pRole" : "PS", "uID" : "VG8"},
+        {"pName" : "none", "pRole" : "Druid", "uID" : "VG9"}
+      ]
+    }
+  },
+  {
+    "name" : "Gorseval",
+    "id" : "GV",
+    "teamSetup" :
+    {
+      "size" : 10,
+      "classes" : [
+        {"pName" : "none", "pRole" : "Chronotank", "uID" : "GV0"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "GV1"},
+        {"pName" : "none", "pRole" : "PSWarr", "uID" : "GV2"},
+        {"pName" : "none", "pRole" : "Bubbleele", "uID" : "GV3"},
+        {"pName" : "none", "pRole" : "Bubblenecro", "uID" : "GV4"},
+        {"pName" : "none", "pRole" : "DPS-Ele", "uID" : "GV5"},
+        {"pName" : "none", "pRole" : "DPS-Engi", "uID" : "GV6"},
+        {"pName" : "none", "pRole" : "DPS-Necro", "uID" : "GV7"},
+        {"pName" : "none", "pRole" : "Druid", "uID" : "GV8"},
+        {"pName" : "none", "pRole" : "Breakbar-Engi", "uID" : "GV9"}
+      ]
+    }
+  },
+  {
+    "name" : "Sabetha",
+    "id" : "SAB",
+    "teamSetup" :
+    {
+      "size" : 10,
+      "classes" : [
+        {"pName" : "none", "pRole" : "Guardian", "uID" : "SAB0"},
+        {"pName" : "none", "pRole" : "Chrono", "uID" : "SAB1"},
+        {"pName" : "none", "pRole" : "Druid", "uID" : "SAB2"},
+        {"pName" : "none", "pRole" : "Rev", "uID" : "SAB3"},
+        {"pName" : "none", "pRole" : "PSWarr", "uID" : "SAB4"},
+        {"pName" : "none", "pRole" : "PSWarr", "uID" : "SAB5"},
+        {"pName" : "none", "pRole" : "Ele", "uID" : "SAB6"},
+        {"pName" : "none", "pRole" : "Ele", "uID" : "SAB7"},
+        {"pName" : "none", "pRole" : "Engi", "uID" : "SAB8"},
+        {"pName" : "none", "pRole" : "Range-Necro", "uID" : "SAB9"}
+      ]
+    }
+  }]
+}
