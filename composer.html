@@ -3,7 +3,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <script type="text/javascript">
@@ -223,8 +222,8 @@
         Setup.create();
         $(targetTableContainer).html( Setup.toTable());
     }
-    function openSample() {
-        SampleWindow = window.open("sampleTeam.json", "", "width=800, height=600");
+    function openSample(sampleName) {
+        SampleWindow = window.open(sampleName, "", "width=800, height=600");
         $(SampleWindow).keyup(function(e) {
             if(e.keyCode == 27) {
                 SampleWindow.close();
@@ -390,7 +389,7 @@
                 <button type="button" class="buttonbutton btn btn-primary" id="btnUpdateSetup" onclick="updateSetup('#raidTables')">Update Names</button>
             </div>
             <div class="col-md-2">
-                <div class="btn-group" style="width:100%" >
+                <div class="dropup" style="width:100%" >
                     <button type="button" class="btn btn-default buttonbutton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Print
@@ -403,7 +402,17 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button type="button" class="buttonbutton btn btn-success"  onclick="openSample()">Open Sample</button>
+                <div class="dropup" style="width:100%" >
+                    <button type="button" class="btn btn-default buttonbutton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Samples
+                    </button>
+                    <ul class="dropdown-menu buttonbutton">
+                        <li><a href="#" onclick="openSample('sampleTeam1Bosses.json')">1 Boss</a></li>
+                        <li><a href="#" onclick="openSample('sampleTeam2Bosses.json')">2 Bosses</a></li>
+                        <li><a href="#" onclick="openSample('sampleTeam3Bosses.json')">3 Bosses</a></li>
+                    </ul>
+                </div>
             </div>
             <div class="col-md-2">
                 <button type="button" id="helpButton" class="buttonbutton btn btn-success" onclick="toggleHelp()">Toggle Help</button>

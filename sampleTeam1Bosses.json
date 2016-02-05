@@ -1,0 +1,23 @@
+{
+  "RaidTeam": [
+    {
+      "name" : "Valeguardian",
+      "id" : "VG",
+      "teamSetup" :
+      {
+        "size" : 10,
+        "classes" : [
+          {"pName" : "none", "pRole" : "Guardian", "uID" : "VG0"},
+          {"pName" : "none", "pRole" : "Chrono", "uID" : "VG1"},
+          {"pName" : "none", "pRole" : "Condi", "uID" : "VG2"},
+          {"pName" : "none", "pRole" : "Condi", "uID" : "VG3"},
+          {"pName" : "none", "pRole" : "Condi", "uID" : "VG4"},
+          {"pName" : "none", "pRole" : "Rev", "uID" : "VG5"},
+          {"pName" : "none", "pRole" : "Rev", "uID" : "VG6"},
+          {"pName" : "none", "pRole" : "Chrono", "uID" : "VG7"},
+          {"pName" : "none", "pRole" : "PS", "uID" : "VG8"},
+          {"pName" : "none", "pRole" : "Druid", "uID" : "VG9"}
+        ]
+      }
+    }]
+}
