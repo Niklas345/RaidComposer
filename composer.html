@@ -13,7 +13,7 @@
     //!        Some of the functions are closely tied to the DOM structure it
     //!        generates via "toTable".
     //! @param  inputJSON JSON Input String
-    function RaidSetup(inputJSON)
+    function RaidSetup(inputJSON, updateFunctionName)
     {
         // Raid data. JSON object, array of bosses which contains information
         this._rawData = inputJSON;
@@ -21,11 +21,37 @@
         // Raid Setup data
         this._data = null;
 
+        // associative array that maps a "uID" identifier into
+        // 2 integer indizees representing a specific player in the complete setup
+        this._mappings = null;
+
+        this.upFunc = updateFunctionName;
+
 
         // Prefix used for unqiue IDs for the player name input fields. Is combined with
         // the current position ID to form an unique selector of the current name input field.
         this._inputFieldPrefix = "RaidPlanInpt";
 
+
+        this.mapping = function(indexBoss, indexPlayer)
+        {
+            this.playerIndex = indexPlayer;
+            this.bossIndex = indexBoss;
+        }
+
+        this.createMapping = function()
+        {
+            this._mappings = new Array();
+            for(var i = 0; i < this._data.RaidTeam.length; i++)
+            {
+                var bData = this._data.RaidTeam[i];
+                for(var j = 0; j < bData.teamSetup.classes.length; j++)
+                {
+                    this._mappings[bData.teamSetup.classes[j].uID] = new this.mapping(i,j);
+                }
+            }
+            console.log(this._mappings);
+        }
 
         //! @brief  creates a single table based on the given JSON object bossData
         //! @param  bossData    The data for the boss. Structure:
@@ -47,7 +73,8 @@
                 res = res + "<td>" + bossData.teamSetup.classes[i].pRole + "</td>\n";
                 res = res + "<td>";
                 res = res + "<input id='" + this._inputFieldPrefix + bossData.teamSetup.classes[i].uID + "' ";
-                res = res + "value='" + bossData.teamSetup.classes[i].pName + "'>";
+                res = res + "value='" + bossData.teamSetup.classes[i].pName + "'";
+                res = res + "onkeyup='"+ this.upFunc + "(" + "&quot;" + bossData.teamSetup.classes[i].uID + "&quot;" + ")'>";
                 res = res + "</td>";
                 res = res + "</tr>\n"
             }
@@ -60,12 +87,14 @@
         this.create = function() {
             try {
                 this._data = JSON.parse(this._rawData);
+
             }
             catch(e)
             {
                 alert("Error while parsing data. Exception is logged to console.")
                 console.log(e);
             }
+            this.createMapping();
         };
 
         //! @brief  creates a table representation of the raid setup.
@@ -82,7 +111,7 @@
 
         };
 
-        //! @brief  Updates the player names of the given boss team composition
+       /* //! @brief  Updates the player names of the given boss team composition
         //!         A table with given unqiue input identifiers has to be able
         //!         this table is being create bei toTable function
         this.updateBossNames = function(bossData)
@@ -102,7 +131,14 @@
                 this.updateBossNames(this._data.RaidTeam[i]);
             }
             console.log(this._data);
-        };
+        };*/
+        this.updateName = function(uID, name)
+        {
+            var ind = this._mappings[uID];
+            console.log(ind);
+            console.log(name);
+            this._data.RaidTeam[ind.bossIndex].teamSetup.classes[ind.playerIndex].pName = name;
+        }
 
         //! @brief  returns a string rep of the given boss team
         this.bossTeamToString = function(bossData)
@@ -218,7 +254,7 @@
         Setup.updateSetup(containerID);
     }
     function readAndCreateSetup(id, targetTableContainer) {
-        Setup = new RaidSetup($(id).val());
+        Setup = new RaidSetup($(id).val(), "updateNameInSetup");
         Setup.create();
         $(targetTableContainer).html( Setup.toTable());
     }
@@ -229,6 +265,12 @@
                 SampleWindow.close();
             }
         });
+    }
+
+    function updateNameInSetup(id)
+    {
+
+        Setup.updateName(id, $("#" + Setup._inputFieldPrefix + id).val());
     }
 
     function toggleHelp()
@@ -281,6 +323,11 @@
             height: 200pt;
             opacity: 0.8;
         }
+        #introduction
+        {
+            font-size: 10pt;
+
+        }
 
     </style>
 </head>
@@ -297,7 +344,22 @@
             </ul>
         </div>
     </nav>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="alert alert-info col-md-6" id="introduction" role="alert">
+            Raid Composer is a small tool to compose Guild Wars 2 groups and create
+            posteable chat messages.<br>
+            Composer takes a JSON for formal group definition. See "Samples" for samples.<br>
+            Invalid JSON may cause an error.
+            <br>
+            IMPORTANT: the uID variable must be unqiue through the whole setup!<br>
+            For further instruction, press the "Help" button.
+        </div>
+        <div class="col-md-3"></div>
 
+
+
+    </div>
     <div class="row">
         <div class="col-md-4"></div>
         <div id="helpStuff" class="col-md-4">
@@ -395,9 +457,9 @@
             <div class="col-md-2">
                 <button type="button" class="buttonbutton btn btn-primary" id="btnCreateSetup" onclick="readAndCreateSetup('#rSetupTArea', '#raidTables')">Read Setup</button>
             </div>
-            <div class="col-md-2">
+            <!--<div class="col-md-2">
                 <button type="button" class="buttonbutton btn btn-primary" id="btnUpdateSetup" onclick="updateSetup('#raidTables')">Update Names</button>
-            </div>
+            </div>-->
             <div class="col-md-2">
                 <div class="dropup" style="width:100%" >
                     <button type="button" class="btn btn-primary buttonbutton"
