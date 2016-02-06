@@ -13,6 +13,8 @@
     //!        Some of the functions are closely tied to the DOM structure it
     //!        generates via "toTable".
     //! @param  inputJSON JSON Input String
+    //! @param  updateFunctionName  Name of the function that is used to communicate with the DOM Structure
+    //!                             Function name is without ().
     function RaidSetup(inputJSON, updateFunctionName)
     {
         // Raid data. JSON object, array of bosses which contains information
@@ -53,6 +55,16 @@
             console.log(this._mappings);
         }
 
+        this._addSpecialRoles = function(playerData)
+        {
+            var res = '';
+            for(var i = 0; i < playerData.specialRoles.length; i++)
+            {
+                res += playerData.specialRoles[i] + " ";
+            }
+            return res;
+        }
+
         //! @brief  creates a single table based on the given JSON object bossData
         //! @param  bossData    The data for the boss. Structure:
         //!                     id : id for table
@@ -66,7 +78,7 @@
             res = res + "<div class='col-md-4'>";
             res = res + "<table id='" + bossData.id + "' class='table table-condensed table-bordered table-striped'>";
             res = res + "<caption>" + bossData.name + "</caption>";
-            res = res + "<tr><th>Role</th><th>Name</th></tr>\n";
+            res = res + "<tr><th>Role</th><th>Name</th><th>Team</th><th>Special</th></tr>";
             for(var i = 0; i < bossData.teamSetup.classes.length; i++)
             {
                 res = res + "<tr id='" + bossData.teamSetup.classes[i].uID + "'>\n";
@@ -76,6 +88,18 @@
                 res = res + "value='" + bossData.teamSetup.classes[i].pName + "'";
                 res = res + "onkeyup='"+ this.upFunc + "(" + "&quot;" + bossData.teamSetup.classes[i].uID + "&quot;" + ")'>";
                 res = res + "</td>";
+                if(bossData.teamSetup.classes[i].pTeam != null) {
+                    res = res + "<td>" + bossData.teamSetup.classes[i].pTeam + "</td>";
+                }
+                else {
+                    res = res + "<td>-</td>";
+                }
+                if(bossData.teamSetup.classes[i].specialRoles != null) {
+                    res = res + "<td>" + this._addSpecialRoles(bossData.teamSetup.classes[i]) + "</td>";
+                } else {
+                    res = res + "<td>-</td>";
+                }
+
                 res = res + "</tr>\n"
             }
             res += "</table>";
@@ -220,6 +244,43 @@
                 res += "\n";
             }
             return res;
+        };
+
+
+        this._hasSpecialRole = function(pData)
+        {
+            return pData.specialRoles != null && pData.specialRoles.length >= 1;
+        }
+
+        //! @brief  Prints the Setup, sorted by special Roles per boss
+        this.toStringSpecialBased = function()
+        {
+            var res = '';
+            for(var i = 0; i < this._data.RaidTeam.length; i++)
+            {
+                res += this._data.RaidTeam[i].name + ": ";
+                var classes = this._data.RaidTeam[i].teamSetup.classes;
+                for(var j = 0; j < classes.length; j++)
+                {
+
+                    if(this._hasSpecialRole(classes[j]))
+                    {
+                        res += classes[j].pName + "->";
+                        for(var k = 0; k < classes[j].specialRoles.length; k++)
+                        {
+                            res += classes[j].specialRoles[k];
+                            if(k < classes[j].specialRoles.length - 1)
+                                res += ", ";
+                        }
+                        res += " | "
+                    }
+
+                }
+                res += "\n";
+                res += "\n";
+
+            }
+            return res;
         }
 
         //! @brief  Returns stringified JSON of setup, indented with 4 whitespace
@@ -247,6 +308,11 @@
     function printJSON(targetTAreaID)
     {
         $(targetTAreaID).html(Setup.toJSONString());
+    }
+
+    function printSpecialRoles(targetTAreaID)
+    {
+        $(targetTAreaID).html(Setup.toStringSpecialBased());
     }
 
     function updateSetup(containerID)
@@ -368,7 +434,7 @@
                 The format has to be a valid json following the sample format <br>
                 Press sample button to see a sample <br>
                 2)Press "Read Setup"<br>
-                3)Edit the names + press "Updates Names"<br>
+                3)Edit the names<br>
                 4)Press "Print", select your preferred print mode</div>
         </div>
         <div class="col-md-4"></div>
@@ -379,70 +445,248 @@
             <div class="col-md-1"></div>
             <div class="col-md-5">
                 <textarea id ="rSetupTArea" class="transparentContainer">
+                    {
+                      "RaidTeam": [
+                        {
+                          "name": "Valeguardian",
+                          "id": "VG",
+                          "teamSetup": {
+                            "size": 10,
+                            "classes": [
+                              {
+                                "pName": "none",
+                                "pRole": "Guardian",
+                                "uID": "VG0",
+                                "pTeam" : "0",
+                                "specialRoles" : []
 
-{
-  "RaidTeam": [
-  {
-    "name" : "Valeguardian",
-    "id" : "VG",
-    "teamSetup" :
-    {
-      "size" : 10,
-      "classes" : [
-        {"pName" : "none", "pRole" : "Guardian", "uID" : "VG0"},
-        {"pName" : "none", "pRole" : "Chrono", "uID" : "VG1"},
-        {"pName" : "none", "pRole" : "Condi", "uID" : "VG2"},
-        {"pName" : "none", "pRole" : "Condi", "uID" : "VG3"},
-        {"pName" : "none", "pRole" : "Condi", "uID" : "VG4"},
-        {"pName" : "none", "pRole" : "Rev", "uID" : "VG5"},
-        {"pName" : "none", "pRole" : "Rev", "uID" : "VG6"},
-        {"pName" : "none", "pRole" : "Chrono", "uID" : "VG7"},
-        {"pName" : "none", "pRole" : "PS", "uID" : "VG8"},
-        {"pName" : "none", "pRole" : "Druid", "uID" : "VG9"}
-      ]
-    }
-  },
-  {
-    "name" : "Gorseval",
-    "id" : "GV",
-    "teamSetup" :
-    {
-      "size" : 10,
-      "classes" : [
-        {"pName" : "none", "pRole" : "Chronotank", "uID" : "GV0"},
-        {"pName" : "none", "pRole" : "Rev", "uID" : "GV1"},
-        {"pName" : "none", "pRole" : "PSWarr", "uID" : "GV2"},
-        {"pName" : "none", "pRole" : "Bubbleele", "uID" : "GV3"},
-        {"pName" : "none", "pRole" : "Bubblenecro", "uID" : "GV4"},
-        {"pName" : "none", "pRole" : "DPS-Ele", "uID" : "GV5"},
-        {"pName" : "none", "pRole" : "DPS-Engi", "uID" : "GV6"},
-        {"pName" : "none", "pRole" : "DPS-Necro", "uID" : "GV7"},
-        {"pName" : "none", "pRole" : "Druid", "uID" : "GV8"},
-        {"pName" : "none", "pRole" : "Breakbar-Engi", "uID" : "GV9"}
-      ]
-    }
-  },
-  {
-    "name" : "Sabetha",
-    "id" : "SAB",
-    "teamSetup" :
-    {
-      "size" : 10,
-      "classes" : [
-        {"pName" : "none", "pRole" : "Guardian", "uID" : "SAB0"},
-        {"pName" : "none", "pRole" : "Chrono", "uID" : "SAB1"},
-        {"pName" : "none", "pRole" : "Druid", "uID" : "SAB2"},
-        {"pName" : "none", "pRole" : "Rev", "uID" : "SAB3"},
-        {"pName" : "none", "pRole" : "PSWarr", "uID" : "SAB4"},
-        {"pName" : "none", "pRole" : "PSWarr", "uID" : "SAB5"},
-        {"pName" : "none", "pRole" : "Ele", "uID" : "SAB6"},
-        {"pName" : "none", "pRole" : "Ele", "uID" : "SAB7"},
-        {"pName" : "none", "pRole" : "Engi", "uID" : "SAB8"},
-        {"pName" : "none", "pRole" : "Range-Necro", "uID" : "SAB9"}
-      ]
-    }
-  }]
-}
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Chrono",
+                                "uID": "VG1",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Condi",
+                                "uID": "VG2",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Condi",
+                                "uID": "VG3",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Condi",
+                                "uID": "VG4",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Rev",
+                                "uID": "VG5",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Rev",
+                                "uID": "VG6",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Chrono",
+                                "uID": "VG7",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "PS",
+                                "uID": "VG8",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Druid",
+                                "uID": "VG9",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "Gorseval",
+                          "id": "GV",
+                          "teamSetup": {
+                            "size": 10,
+                            "classes": [
+                              {
+                                "pName": "none",
+                                "pRole": "Chronotank",
+                                "uID": "GV0",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Rev",
+                                "uID": "GV1",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "PSWarr",
+                                "uID": "GV2",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Bubbleele",
+                                "uID": "GV3",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Bubblenecro",
+                                "uID": "GV4",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "DPS-Ele",
+                                "uID": "GV5",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "DPS-Engi",
+                                "uID": "GV6",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "DPS-Necro",
+                                "uID": "GV7",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Druid",
+                                "uID": "GV8",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Breakbar-Engi",
+                                "uID": "GV9",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "Sabetha",
+                          "id": "SAB",
+                          "teamSetup": {
+                            "size": 10,
+                            "classes": [
+                              {
+                                "pName": "none",
+                                "pRole": "Guardian",
+                                "uID": "SAB0",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Chrono",
+                                "uID": "SAB1",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Druid",
+                                "uID": "SAB2",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Rev",
+                                "uID": "SAB3",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "PSWarr",
+                                "uID": "SAB4",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "PSWarr",
+                                "uID": "SAB5",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Ele",
+                                "uID": "SAB6",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Ele",
+                                "uID": "SAB7",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Engi",
+                                "uID": "SAB8",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              },
+                              {
+                                "pName": "none",
+                                "pRole": "Range-Necro",
+                                "uID": "SAB9",
+                                "pTeam" : "0",
+                                "specialRoles" : []
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
 
                 </textarea>
             </div>
@@ -469,6 +713,7 @@
                     <ul class="dropdown-menu buttonbutton">
                         <li><a href="#" onclick="createStringRep('#rSetupPrint',false)">Boss-Sorted</a></li>
                         <li><a href="#" onclick="createStringRep('#rSetupPrint', true)">Player-Sorted</a></li>
+                        <li><a href="#" onclick="printSpecialRoles('#rSetupPrint')">Special-Sorted</a></li>
                         <li><a href="#" onclick="printJSON('#rSetupPrint')">Readable JSON</a></li>
                     </ul>
                 </div>
