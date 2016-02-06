@@ -1,0 +1,242 @@
+{
+  "RaidTeam": [
+    {
+      "name": "Valeguardian",
+      "id": "VG",
+      "teamSetup": {
+        "size": 10,
+        "classes": [
+          {
+            "pName": "none",
+            "pRole": "Guardian",
+            "uID": "VG0",
+            "pTeam" : "2",
+            "specialRoles" : ["Green", "Tank"]
+
+          },
+          {
+            "pName": "none",
+            "pRole": "Chrono",
+            "uID": "VG1",
+            "pTeam" : "1",
+            "specialRoles" : ["Blue", "Green Field"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Condi",
+            "uID": "VG2",
+            "pTeam" : "1",
+            "specialRoles" : ["Red", "Green Field"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Condi",
+            "uID": "VG3",
+            "pTeam" : "2",
+            "specialRoles" : ["Red", "Green Field"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Condi",
+            "uID": "VG4",
+            "pTeam" : "2",
+            "specialRoles" : ["Red", "Green Field"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Rev",
+            "uID": "VG5",
+            "pTeam" : "1",
+            "specialRoles" : ["Blue"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Rev",
+            "uID": "VG6",
+            "pTeam" : "2",
+            "specialRoles" : ["Green"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "VG7",
+            "pTeam" : "1",
+            "specialRoles" : ["Blue"]
+          },
+          {
+            "pName": "none",
+            "pRole": "PS",
+            "uID": "VG8",
+            "pTeam" : "1",
+            "specialRoles" : ["Green"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Druid",
+            "uID": "VG9",
+            "pTeam" : "2",
+            "specialRoles" : ["Blue", "Green Field"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Gorseval",
+      "id": "GV",
+      "teamSetup": {
+        "size": 10,
+        "classes": [
+          {
+            "pName": "none",
+            "pRole": "Chronotank",
+            "uID": "GV0",
+            "pTeam" : "1",
+            "specialRoles" : ["Quickness"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Rev",
+            "uID": "GV1",
+            "pTeam" : "1",
+            "specialRoles" : ["Fury stacken"]
+          },
+          {
+            "pName": "none",
+            "pRole": "PS",
+            "uID": "GV2",
+            "pTeam" : "1",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "GV3",
+            "pTeam" : "1",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Condi-Necro",
+            "uID": "GV4",
+            "pTeam" : "2",
+            "specialRoles" : ["Bubbles"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "GV5",
+            "pTeam" : "1",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Condi-Engi",
+            "uID": "GV6",
+            "pTeam" : "2",
+            "specialRoles" : ["Geist festhalten"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "GV7",
+            "pTeam" : "2",
+            "specialRoles" : ["Bubbles"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Druid",
+            "uID": "GV8",
+            "pTeam" : "2",
+            "specialRoles" : ["Geist festhalten", "Fury stacken"]
+          },
+          {
+            "pName": "none",
+            "pRole": "PS",
+            "uID": "GV9",
+            "pTeam" : "2",
+            "specialRoles" : ["Geist festhalten"]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sabetha",
+      "id": "SAB",
+      "teamSetup": {
+        "size": 10,
+        "classes": [
+          {
+            "pName": "none",
+            "pRole": "Protection-Guardian",
+            "uID": "SAB0",
+            "pTeam" : "2",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Chrono",
+            "uID": "SAB1",
+            "pTeam" : "2",
+            "specialRoles" : ["Quickness"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Druid",
+            "uID": "SAB2",
+            "pTeam" : "1",
+            "specialRoles" : ["Fury stacken"]
+          },
+          {
+            "pName": "none",
+            "pRole": "Rev",
+            "uID": "SAB3",
+            "pTeam" : "2",
+            "specialRoles" : ["Fury stacken"]
+          },
+          {
+            "pName": "none",
+            "pRole": "PS",
+            "uID": "SAB4",
+            "pTeam" : "1",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "PS",
+            "uID": "SAB5",
+            "pTeam" : "2",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "SAB6",
+            "pTeam" : "1",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "SAB7",
+            "pTeam" : "1",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Ele",
+            "uID": "SAB8",
+            "pTeam" : "2",
+            "specialRoles" : []
+          },
+          {
+            "pName": "none",
+            "pRole": "Condi-Necro",
+            "uID": "SAB9",
+            "pTeam" : "1",
+            "specialRoles" : ["Kiten"]
+          }
+        ]
+      }
+    }
+  ]
+}
